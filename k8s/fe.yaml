@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cookmate-fe
+  namespace: cookmate
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: cookmate-fe
+  template:
+    metadata:
+      labels:
+        app: cookmate-fe
+    spec:
+      containers:
+      - name: cookmate-fe
+        image: kiennlt/cookmate-fe:v7
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env: []
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cookmate-fe
+  namespace: cookmate
+spec:
+  selector:
+    app: cookmate-fe
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+
+---
+# Ingress to provide a short hostname and path-based routing
+# Replace `example.com` with your domain and create TLS secret `fe-tls` if needed
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: cookmate-app-ingress
+#   namespace: cookmate
+#   annotations:
+#     kubernetes.io/ingress.class: "nginx"
+#     nginx.ingress.kubernetes.io/rewrite-target: "/"
+# spec:
+#   tls:
+#   - hosts:
+#     - example.com
+#     secretName: fe-tls
+#   rules:
+#   - host: example.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: cookmate-fe
+#             port:
+#               number: 80
+#       - path: /api/user
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: cookmate-user
+#             port:
+#               number: 80
+#       - path: /api/recipe
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: cookmate-recipe
+#             port:
+#               number: 80

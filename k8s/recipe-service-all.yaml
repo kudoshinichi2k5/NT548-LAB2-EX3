@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cookmate-recipe
+  namespace: cookmate
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: cookmate-recipe
+  template:
+    metadata:
+      labels:
+        app: cookmate-recipe
+    spec:
+      containers:
+      - name: cookmate-recipe
+        # Jenkins replaces this line using sed with ${RECIPE_IMAGE}
+        # Keep the service name present so sed in Jenkinsfile matches it
+        # image: REPLACE_REGISTRY/nt548-project/recipe-service:latest
+        image: kiennlt/cookmate-recipe:v2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5002
+        envFrom:
+        - secretRef:
+            name: cookmate-recipe-secret
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5002
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cookmate-recipe
+  namespace: cookmate
+spec:
+  type: ClusterIP
+  selector:
+    app: cookmate-recipe
+  ports:
+    - port: 80
+      targetPort: 5002
