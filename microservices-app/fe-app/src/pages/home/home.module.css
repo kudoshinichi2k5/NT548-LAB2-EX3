@@ -1,0 +1,165 @@
+.background {
+    background-color: #E9DEF2;
+    height: 100%;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    padding-bottom: 50px;
+}
+.imgcorner {
+    position: absolute;
+    right: 3px;
+    width: 500px;
+    height: 500px;
+    margin-top: -3px;
+}
+
+.imgcontainer {
+    flex: 1;
+    display: flex;
+    position: absolute;
+    right: 60px;
+    margin-top: 30px;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.randomMeals {
+    flex: 2;
+    display: flex;
+    flex-direction: column;    
+    justify-content: left;
+    align-items: flex-start;
+    margin-left: 20px;
+}
+
+.titleRandomMeals {
+    font-size: 36px;
+    font-weight: bold;
+    color: #5e2798;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 40px;
+}
+
+.descriptionRandomMeals {
+    font-size: 18px;
+    color: #8758a8;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 15px;
+    max-width: 600px;
+    display: -webkit-box;         
+    -webkit-line-clamp: 11;        
+    -webkit-box-orient: vertical; 
+    overflow: hidden;             
+    text-overflow: ellipsis;   
+}
+
+.searchBar {
+  width: 70%;
+  height: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 300px auto 0; 
+  font-size: 16px;
+  font-family: 'Nunito', sans-serif;
+  color: #5e2798;
+  display: block;      
+  border: none;
+}
+
+.searchBar:focus {
+  outline: none;
+  box-shadow: 0 0 5px #9066bc;
+}
+
+.titlenamefood {
+    font-size: 25px;
+    font-weight: bold;
+    color: #5e2798;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 30px;
+    font-weight: bold;
+}
+
+.titlefeat {
+    font-size: 25px;
+    font-weight: bold;
+    color: #5e2798;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 50px;
+    font-weight: bold;
+    align-self: flex-start;
+    margin-left: 40px;
+}
+
+.featfoodcontainer {
+    justify-items: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-top: 30px;
+    width: 90%;
+}
+
+.eachfeatcontainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.imgfeat {
+    display: inline-block;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+
+.featname {
+    font-family: 'Nunito', sans-serif;
+    color: #966cc4;
+    font-size: 20px;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+
+.btnmore {
+    background-color: white;
+    font-size: 17px;
+    font-weight: bold;
+    color: #72499e;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+    margin-top: 30px;
+    padding: 10px;
+    width: 86%;
+    border: 2px solid #553873;
+    transition: all 0.3s ease;
+}
+
+.textfeat {
+    margin-top: 20px;
+    font-family: 'Nunito', sans-serif;
+    color: #966cc4;
+    font-size: 16px;
+    text-align: center;
+}
+
+.textlike {
+    font-size: 13px;
+    color: #5e2798;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 10px;
+    opacity: 0.7
+}

@@ -1,0 +1,102 @@
+.background {
+    height: 100vh;
+    display: flex;
+    background: linear-gradient(90deg, #D2BCEA 0%, #8071EF 100%);
+}
+
+.left {
+  flex: 1;                   
+  display: flex;
+  flex-direction: column;    
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+    width: 150px;
+    margin-top: -20px;
+    filter: 
+    drop-shadow(2px 0 0 #ffffff) 
+    drop-shadow(-2px 0 0 #ffffff) 
+    drop-shadow(0 2px 0 #ffffff) 
+    drop-shadow(0 -2px 0 #ffffff);
+}
+
+.textpreview {
+    font-size: 16px;
+    color: #FFFFFF;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+}
+
+.button {
+    background: #7a7ee1;
+    width: 150px;
+    height: 50px;
+    font-size: 14px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 20px;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+.buttonContainer {
+    gap:20px;
+    display: flex;
+}
+
+.right {
+  flex: 1;                   
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 70px;
+    border-radius: 30px;
+    display: flex;  
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+}
+
+.inputField {
+    width: 300px;
+    height: 18px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: 'Nunito', sans-serif;
+    color: #624ba8;
+}
+
+.inputField:focus {
+    border-color: #8d97cb;
+    outline: none;
+    box-shadow: 0 0 5px rgba(131, 116, 177, 0.3);
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 35px;
+    color: #8a6fdb;
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+}
+
+.forgotpassword {
+    font-size: 14px;
+    color: #595cca;
+    text-align: right;
+    margin-right: 10px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    text-decoration: underline;
+}
