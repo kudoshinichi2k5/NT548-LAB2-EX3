@@ -60,6 +60,9 @@ pipeline {
         }
 
         stage('Docker Build') {
+            when { 
+                changeset "**/*" 
+            }
             steps {
                 script {
                     // Build song song hoặc tuần tự các image
@@ -81,6 +84,9 @@ pipeline {
         }
 
         stage('Scan with Trivy') {
+            when { 
+                changeset "**/*" 
+            }
             steps {
                 script {
                     // Quét và xuất ra file báo cáo để lưu trữ (giống pipeline mẫu)
@@ -95,6 +101,9 @@ pipeline {
         }
 
         stage('Push to Docker Hub') {
+            when { 
+                changeset "**/*" 
+            }
             steps {
                 // SỬA ĐỔI: Dùng 'string' thay vì 'usernamePassword' 
                 // vì Credential 'docker-hub-token' của bạn là loại Secret text
