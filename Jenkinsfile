@@ -83,14 +83,14 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDS_ID}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                    withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
                         // Login Docker Hub
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                        
-                        // Push cả 3 image
-                        sh "docker push ${USER_IMAGE}:${IMAGE_TAG}"
-                        sh "docker push ${RECIPE_IMAGE}:${IMAGE_TAG}"
-                        sh "docker push ${FE_IMAGE}:${IMAGE_TAG}"
+                        sh '''
+                            echo "$DOCKER_TOKEN" | docker login -u kiennlt --password-stdin
+                            docker push ${USER_IMAGE}:${IMAGE_TAG}
+                            docker push ${RECIPE_IMAGE}:${IMAGE_TAG}
+                            docker push ${FE_IMAGE}:${IMAGE_TAG}
+                        '''
                     }
                 }
             }
