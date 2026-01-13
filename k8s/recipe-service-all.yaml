@@ -20,10 +20,7 @@ spec:
     spec:
       containers:
       - name: cookmate-recipe
-        # Jenkins replaces this line using sed with ${RECIPE_IMAGE}
-        # Keep the service name present so sed in Jenkinsfile matches it
-        # image: REPLACE_REGISTRY/nt548-project/recipe-service:latest
-        image: kiennlt/cookmate-recipe:v2
+        image: kiennlt/cookmate-recipe:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5002

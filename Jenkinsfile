@@ -14,7 +14,6 @@ pipeline {
         RECIPE_IMAGE = "kiennlt/cookmate-recipe"
         FE_IMAGE = "kiennlt/cookmate-fe"
 
-        // ID Credentials (khớp với báo cáo/cấu hình của bạn)
         DOCKER_CREDS_ID = 'docker-hub-token'
         SONAR_TOKEN_ID = 'sonar-token'
 
@@ -33,8 +32,6 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Bước này tùy chọn, nếu bạn muốn test cài đặt npm trước khi build docker
-                // Nếu không cần thiết (vì Docker build sẽ tự làm) thì có thể bỏ qua để tiết kiệm thời gian
                 echo 'Skipping npm install on agent, Docker build handles dependencies.'
             }
         }
@@ -65,7 +62,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Build song song hoặc tuần tự các image
                     echo '--- Building Images ---'
                     
                     dir('microservices-app/user-service') {
@@ -89,7 +85,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Quét và xuất ra file báo cáo để lưu trữ (giống pipeline mẫu)
                     sh "trivy image --severity CRITICAL,HIGH --format table --output trivy-user.txt ${USER_IMAGE}:${IMAGE_TAG}"
                     sh "trivy image --severity CRITICAL,HIGH --format table --output trivy-recipe.txt ${RECIPE_IMAGE}:${IMAGE_TAG}"
                     sh "trivy image --severity CRITICAL,HIGH --format table --output trivy-fe.txt ${FE_IMAGE}:${IMAGE_TAG}"
@@ -105,8 +100,6 @@ pipeline {
                 changeset "**/*" 
             }
             steps {
-                // SỬA ĐỔI: Dùng 'string' thay vì 'usernamePassword' 
-                // vì Credential 'docker-hub-token' của bạn là loại Secret text
                 withCredentials([string(credentialsId: "${DOCKER_CREDS_ID}", variable: 'DOCKER_TOKEN')]) {
                     sh '''
                         # Dùng biến DOCKER_HUB_USER (đã khai báo ở đầu file) làm username
@@ -126,15 +119,12 @@ pipeline {
                     script {
                         echo '🚀 Preparing Deployment Files...'
                         
-                        // 1. Cập nhật file YAML với Image Tag mới nhất (thực hiện trên Jenkins Workspace)
                         sh "sed -i 's|image: kiennlt/cookmate-fe:.*|image: ${FE_IMAGE}:${IMAGE_TAG}|g' fe.yaml"
                         sh "sed -i 's|image: kiennlt/cookmate-user:.*|image: ${USER_IMAGE}:${IMAGE_TAG}|g' user-service-all.yaml"
                         sh "sed -i 's|image: kiennlt/cookmate-recipe:.*|image: ${RECIPE_IMAGE}:${IMAGE_TAG}|g' recipe-service-all.yaml"
                         
                         echo '🚀 Copying files to Host and Deploying...'
                         
-                        // 2. Dùng SSH Agent để copy file sang Host và chạy deploy.sh
-                        // Yêu cầu: Đã cấu hình credential 'deploy-server-ssh' (loại SSH Username with Private Key)
                         sshagent(credentials: ['deploy-server-ssh']) {
                             sh """
                                 # A. Tạo thư mục deploy trên máy Host (nếu chưa có)
@@ -163,7 +153,6 @@ pipeline {
         }
     }
     
-    // Lưu trữ báo cáo scan sau khi chạy xong (học từ pipeline mẫu)
     post {
         always {
             archiveArtifacts artifacts: '*.txt', fingerprint: true, allowEmptyArchive: true
