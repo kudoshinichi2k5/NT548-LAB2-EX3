@@ -19,7 +19,7 @@ pipeline {
         SONAR_TOKEN_ID = 'sonar-token'
 
         DEPLOY_HOST_IP = '192.168.40.158' 
-        DEPLOY_USER = 'kiennlt'
+        DEPLOY_USER = 'kienlt'
     }
 
     stages {
