@@ -18,6 +18,8 @@ pipeline {
         DOCKER_CREDS_ID = 'docker-hub-token'
         SONAR_TOKEN_ID = 'sonar-token'
 
+        DOCKER_HUB_USER = 'kiennlt'
+
         DEPLOY_HOST_IP = '192.168.40.158' 
         DEPLOY_USER = 'kienlt'
     }
@@ -98,8 +100,8 @@ pipeline {
                 // vì Credential 'docker-hub-token' của bạn là loại Secret text
                 withCredentials([string(credentialsId: "${DOCKER_CREDS_ID}", variable: 'DOCKER_TOKEN')]) {
                     sh '''
-                        # Dùng biến DEPLOY_USER (đã khai báo ở đầu file) làm username
-                        echo "${DOCKER_TOKEN}" | docker login -u ${DEPLOY_USER} --password-stdin
+                        # Dùng biến DOCKER_HUB_USER (đã khai báo ở đầu file) làm username
+                        echo "${DOCKER_TOKEN}" | docker login -u ${DOCKER_HUB_USER} --password-stdin
                         
                         docker push ${USER_IMAGE}:${IMAGE_TAG}
                         docker push ${RECIPE_IMAGE}:${IMAGE_TAG}
