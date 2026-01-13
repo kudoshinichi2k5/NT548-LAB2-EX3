@@ -17,6 +17,9 @@ pipeline {
         // ID Credentials (khớp với báo cáo/cấu hình của bạn)
         DOCKER_CREDS_ID = 'docker-hub-token'
         SONAR_TOKEN_ID = 'sonar-token'
+
+        DEPLOY_HOST_IP = '192.168.40.158' 
+        DEPLOY_USER = 'kiennlt'
     }
 
     stages {
@@ -102,25 +105,46 @@ pipeline {
             }
         }
 
-        stage('Deploy to K8s') {
+        stage('Deploy to Minikube via SSH') {
             steps {
                 dir('k8s') {
                     script {
-                        echo '🚀 Deploying to Kubernetes...'
+                        echo '🚀 Preparing Deployment Files...'
                         
-                        // 1. Cập nhật file YAML với Image Tag mới nhất
+                        // 1. Cập nhật file YAML với Image Tag mới nhất (thực hiện trên Jenkins Workspace)
                         sh "sed -i 's|image: kiennlt/cookmate-fe:.*|image: ${FE_IMAGE}:${IMAGE_TAG}|g' fe.yaml"
                         sh "sed -i 's|image: kiennlt/cookmate-user:.*|image: ${USER_IMAGE}:${IMAGE_TAG}|g' user-service-all.yaml"
                         sh "sed -i 's|image: kiennlt/cookmate-recipe:.*|image: ${RECIPE_IMAGE}:${IMAGE_TAG}|g' recipe-service-all.yaml"
                         
-                        // 2. Chạy script deploy
-                        // Lưu ý: Agent cần có quyền kubectl tới cluster
-                        sh "chmod +x deploy.sh"
-                        sh "./deploy.sh"
+                        echo '🚀 Copying files to Host and Deploying...'
+                        
+                        // 2. Dùng SSH Agent để copy file sang Host và chạy deploy.sh
+                        // Yêu cầu: Đã cấu hình credential 'deploy-server-ssh' (loại SSH Username with Private Key)
+                        sshagent(credentials: ['deploy-server-ssh']) {
+                            sh """
+                                # A. Tạo thư mục deploy trên máy Host (nếu chưa có)
+                                ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST_IP} 'mkdir -p ~/cookmate-deploy'
+
+                                # B. Copy toàn bộ file trong thư mục k8s hiện tại (đã sửa tag) sang máy Host
+                                # Lệnh scp giúp đảm bảo Host nhận được đúng phiên bản YAML vừa build xong
+                                scp -o StrictHostKeyChecking=no * ${DEPLOY_USER}@${DEPLOY_HOST_IP}:~/cookmate-deploy/
+
+                                # C. SSH vào Host và chạy script deploy.sh
+                                ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${DEPLOY_HOST_IP} '
+                                    cd ~/cookmate-deploy
+                                    chmod +x deploy.sh
+                                    
+                                    # Chạy script deploy (kubectl trên Host sẽ thực thi lệnh này)
+                                    ./deploy.sh
+                                    
+                                    # Kiểm tra trạng thái sau khi deploy
+                                    kubectl get pods -n cookmate
+                                '
+                            """
+                        }
                     }
                 }
             }
-        }
     }
     
     // Lưu trữ báo cáo scan sau khi chạy xong (học từ pipeline mẫu)
