@@ -94,9 +94,13 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDS_ID}", passwordVariable: 'DOCKER_TOKEN', usernameVariable: 'DOCKER_USER')]) {
+                // SỬA ĐỔI: Dùng 'string' thay vì 'usernamePassword' 
+                // vì Credential 'docker-hub-token' của bạn là loại Secret text
+                withCredentials([string(credentialsId: "${DOCKER_CREDS_ID}", variable: 'DOCKER_TOKEN')]) {
                     sh '''
-                        echo "${DOCKER_TOKEN}" | docker login -u ${DOCKER_USER} --password-stdin
+                        # Dùng biến DEPLOY_USER (đã khai báo ở đầu file) làm username
+                        echo "${DOCKER_TOKEN}" | docker login -u ${DEPLOY_USER} --password-stdin
+                        
                         docker push ${USER_IMAGE}:${IMAGE_TAG}
                         docker push ${RECIPE_IMAGE}:${IMAGE_TAG}
                         docker push ${FE_IMAGE}:${IMAGE_TAG}
@@ -104,7 +108,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Deploy to Minikube via SSH') {
             steps {
                 dir('k8s') {
@@ -145,6 +149,7 @@ pipeline {
                     }
                 }
             }
+        }
     }
     
     // Lưu trữ báo cáo scan sau khi chạy xong (học từ pipeline mẫu)
