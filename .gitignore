@@ -294,3 +294,8 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Secret file
+secret-recipe.yaml
+secret-user.yaml
+.env
