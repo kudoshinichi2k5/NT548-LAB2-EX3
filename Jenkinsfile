@@ -117,13 +117,13 @@ pipeline {
             steps {
                 dir('k8s') {
                     script {
-                        echo '🚀 Preparing Deployment Files...'
+                        echo 'Preparing Deployment Files...'
                         
                         sh "sed -i 's|image: kiennlt/cookmate-fe:.*|image: ${FE_IMAGE}:${IMAGE_TAG}|g' fe.yaml"
                         sh "sed -i 's|image: kiennlt/cookmate-user:.*|image: ${USER_IMAGE}:${IMAGE_TAG}|g' user-service-all.yaml"
                         sh "sed -i 's|image: kiennlt/cookmate-recipe:.*|image: ${RECIPE_IMAGE}:${IMAGE_TAG}|g' recipe-service-all.yaml"
                         
-                        echo '🚀 Copying files to Host and Deploying...'
+                        echo 'Copying files to Host and Deploying...'
                         
                         sshagent(credentials: ['deploy-server-ssh']) {
                             sh """
